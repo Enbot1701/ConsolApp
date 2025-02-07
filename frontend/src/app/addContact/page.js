@@ -55,9 +55,10 @@ export default function AddContact() {
     try {
       console.log("Contact Data:", contactData);
       // Call the API to add the contact
-      await addContact(contactData);
+      const data = await addContact(contactData);
+      const id = data.id;
       // Show success message
-      alert("Contact added successfully!");
+      router.push(`/viewContact/${id}`);
     } catch (error) {
       setError("An error occurred while adding the contact.");
       console.error("Error adding contact:", error);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import BottomNavigation from "@/components/BottomNavigation";
-import { getDiscipleById } from "@/service/service";
+import { changeToContact, getDiscipleById } from "@/service/service";
 import { FaUser, FaArchive } from "react-icons/fa"; // Importing icons
 
 export default function Viewdisciple() {
@@ -50,9 +50,10 @@ export default function Viewdisciple() {
         fullName: discipleDetails.fullName,
         poc: discipleDetails.poc,
         source: discipleDetails.source,
-        discipleType: discipleDetails.discipleType,
-        discipleInfo: discipleDetails.discipleInfo,
-        remarks: discipleDetails.remarks
+        contactType: discipleDetails.contactType,
+        contactInfo: discipleDetails.contactInfo,
+        remarks: discipleDetails.remarks,
+        cg: discipleDetails.cg
       }
       console.log(data);
       await editdiscipleInfo(data);
@@ -98,7 +99,8 @@ export default function Viewdisciple() {
         sheetType: "Disciples",
         id: id
       }
-      await changeToDisciple(data);
+      await changeToContact(data);
+      router.push(`/viewContact/${id}`);
     } catch (error) {
       setError("An error occurred while updating progress.");
     } finally {
@@ -114,7 +116,7 @@ export default function Viewdisciple() {
       const data = {
         method: "archive",
         sheetName: username,
-        sheetType: "disciples",
+        sheetType: "Disciples",
         id: id
       }
       await archivedisciple(data);
@@ -197,6 +199,17 @@ export default function Viewdisciple() {
             className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600"
             value={discipleDetails.fullName}
             onChange={(e) => setdiscipleDetails({ ...discipleDetails, fullName: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="text-m font-semibold text-black">CG</label>
+          <input
+            type="text"
+            className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600"
+            value={discipleDetails.cg}
+            onChange={(e) => setdiscipleDetails({ ...discipleDetails, cg: e.target.value })}
+            readOnly
           />
         </div>
 
@@ -350,6 +363,116 @@ export default function Viewdisciple() {
               <p className="font-bold text-black">Meet Up</p>
               <span className={`text-2xl ${discipleDetails.meetUp ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.meetUp ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* Core Team */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, coreTeam: !discipleDetails.coreTeam })}
+            >
+              <p className="font-bold text-black">Core Team</p>
+              <span className={`text-2xl ${discipleDetails.coreTeam ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.coreTeam ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* Next Step */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, nextStep: !discipleDetails.nextStep })}
+            >
+              <p className="font-bold text-black">Next Step</p>
+              <span className={`text-2xl ${discipleDetails.nextStep ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.nextStep ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* Water Baptism */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, waterBaptism: !discipleDetails.waterBaptism })}
+            >
+              <p className="font-bold text-black">Water Baptism</p>
+              <span className={`text-2xl ${discipleDetails.waterBaptism ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.waterBaptism ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* Encounter */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, encounter: !discipleDetails.encounter })}
+            >
+              <p className="font-bold text-black">Encounter</p>
+              <span className={`text-2xl ${discipleDetails.encounter ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.encounter ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* Holy Spirit Baptism */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, hsBaptism: !discipleDetails.hsBaptism })}
+            >
+              <p className="font-bold text-black">Holy Spirit Baptism</p>
+              <span className={`text-2xl ${discipleDetails.hsBaptism ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.hsBaptism ? "✔" : "✖"}
+              </span>
+            </div>
+
+             {/* GT1 */}
+             <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, gt1: !discipleDetails.gt1 })}
+            >
+              <p className="font-bold text-black">GT1</p>
+              <span className={`text-2xl ${discipleDetails.gt1 ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.gt1 ? "✔" : "✖"}
+              </span>
+            </div>
+
+             {/* GT2 */}
+             <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, gt2: !discipleDetails.gt2 })}
+            >
+              <p className="font-bold text-black">GT2</p>
+              <span className={`text-2xl ${discipleDetails.gt2 ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.gt2 ? "✔" : "✖"}
+              </span>
+            </div>
+
+             {/* GT3 */}
+             <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, gt3: !discipleDetails.gt3 })}
+            >
+              <p className="font-bold text-black">GT3</p>
+              <span className={`text-2xl ${discipleDetails.gt3 ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.gt3 ? "✔" : "✖"}
+              </span>
+            </div>
+
+             {/* GT4 */}
+             <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, gt4: !discipleDetails.gt4 })}
+            >
+              <p className="font-bold text-black">GT4</p>
+              <span className={`text-2xl ${discipleDetails.gt4 ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.gt4 ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* CGLT */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setdiscipleDetails({ ...discipleDetails, cglt: !discipleDetails.cglt })}
+            >
+              <p className="font-bold text-black">CGLT</p>
+              <span className={`text-2xl ${discipleDetails.cglt ? "text-green-600" : "text-red-600"}`}>
+                {discipleDetails.cglt ? "✔" : "✖"}
               </span>
             </div>
 

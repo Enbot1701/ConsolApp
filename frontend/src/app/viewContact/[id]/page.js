@@ -101,6 +101,7 @@ export default function ViewContact() {
         id: id
       }
       await changeToDisciple(data);
+      router.push(`/viewDisciple/${id}`);
     } catch (error) {
       setError("An error occurred while updating progress.");
     } finally {
