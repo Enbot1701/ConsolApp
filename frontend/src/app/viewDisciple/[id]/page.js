@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import BottomNavigation from "@/components/BottomNavigation";
-import { changeToContact, getDiscipleById, editDiscipleInfo, editDiscipleProgress } from "@/service/service";
+import { changeToContact, getDiscipleById, editDiscipleInfo, editDiscipleProgress, getCGNames, archiveContact } from "@/service/service";
 import { FaUser, FaArchive } from "react-icons/fa"; // Importing icons
 
 export default function Viewdisciple() {
@@ -15,30 +15,37 @@ export default function Viewdisciple() {
   const [activeTab, setActiveTab] = useState("info");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const [cgNames, setCGNames] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     if (id) {
       const username = localStorage.getItem("username");
       setUsername(username);
-
-      const fetchdiscipleDetails = async () => {
+  
+      const fetchData = async () => {
         setLoading(true);
         try {
-          const data = await getDiscipleById(username, id);
-          setdiscipleDetails(data);
-          console.log(data)
+          // Fetch disciple details
+          const discipleData = await getDiscipleById(username, id);
+          setdiscipleDetails(discipleData);
+          console.log("Disciple Data:", discipleData);
+  
+          // Fetch CG Names
+          const cgNames = await getCGNames();
+          setCGNames(cgNames);
+          console.log("CG Names:", cgNames);
         } catch (error) {
-          console.error("Error fetching disciple details:", error);
+          console.error("Error fetching data:", error);
         } finally {
           setLoading(false);
         }
       };
-
-      fetchdiscipleDetails();
+  
+      fetchData();
     }
   }, [id]);
-
+  
   const handleEditInfo = async (e) => {
     setError("");
     setLoading(true);
@@ -129,7 +136,7 @@ export default function Viewdisciple() {
         sheetType: "Disciples",
         id: id
       }
-      await archivedisciple(data);
+      await archiveContact(data);
       router.push('/people')
     } catch (error) {
       setError("An error occurred while updating progress.");
