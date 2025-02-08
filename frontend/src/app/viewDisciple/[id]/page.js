@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import BottomNavigation from "@/components/BottomNavigation";
-import { changeToContact, getDiscipleById } from "@/service/service";
+import { changeToContact, getDiscipleById, editDiscipleInfo, editDiscipleProgress } from "@/service/service";
 import { FaUser, FaArchive } from "react-icons/fa"; // Importing icons
 
 export default function Viewdisciple() {
@@ -15,6 +15,7 @@ export default function Viewdisciple() {
   const [activeTab, setActiveTab] = useState("info");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
@@ -43,9 +44,9 @@ export default function Viewdisciple() {
     setLoading(true);
     try {
       const data = {
-        method: "editdiscipleInfo",
+        method: "editDiscipleInfo",
         sheetName: username,
-        sheetType: "disciples",
+        sheetType: "Disciples",
         id: discipleDetails.id,
         fullName: discipleDetails.fullName,
         poc: discipleDetails.poc,
@@ -56,7 +57,7 @@ export default function Viewdisciple() {
         cg: discipleDetails.cg
       }
       console.log(data);
-      await editdiscipleInfo(data);
+      await editDiscipleInfo(data);
     } catch (error) {
       setError("An error occurred while updating info.");
     } finally {
@@ -69,18 +70,27 @@ export default function Viewdisciple() {
     setLoading(true);
     try {
       const data = {
-        method: "editdiscipleProgress",
+        method: "editDiscipleProgress",
         sheetName: username,
-        sheetType: "disciples",
+        sheetType: "Disciples",
         id: id, 
         gospelShared: discipleDetails.gospelShared,
         saved: discipleDetails.saved,
         called: discipleDetails.called,
         meetUp: discipleDetails.meetUp,
-        progressRemarks: discipleDetails.progressRemarks
+        progressRemarks: discipleDetails.progressRemarks,
+        coreTeam: discipleDetails.coreTeam,
+        nextStep: discipleDetails.nextStep,
+        waterBaptism: discipleDetails.waterBaptism,
+        hsBaptism: discipleDetails.hsBaptism,
+        gt1: discipleDetails.gt1,
+        gt2: discipleDetails.gt2,
+        gt3: discipleDetails.gt3,
+        gt4: discipleDetails.gt4,
+        cglt: discipleDetails.cglt
       }
-      console.log(data);
-      await editdiscipleProgress(data);
+      console.log("Updating Editing Profile")
+      await editDiscipleProgress(data);
     } catch (error) {
       setError("An error occurred while updating progress.");
     } finally {
@@ -120,6 +130,7 @@ export default function Viewdisciple() {
         id: id
       }
       await archivedisciple(data);
+      router.push('/people')
     } catch (error) {
       setError("An error occurred while updating progress.");
     } finally {
@@ -149,7 +160,7 @@ export default function Viewdisciple() {
           <div className="flex items-center space-x-4">
           <button onClick={handleContactClick} className="flex flex-col items-center">
             <FaUser className="text-blue-700 text-2xl" />
-            <span className="text-xs text-blue-700 font-semibold">disciple</span>
+            <span className="text-xs text-blue-700 font-semibold">Contact</span>
           </button>
           <button onClick={handleArchiveClick} className="flex flex-col items-center">
             <FaArchive className="text-gray-700 text-2xl" />
@@ -263,7 +274,7 @@ export default function Viewdisciple() {
             <select
               className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none pr-10"
               value={discipleDetails.contactType || "LineID"}
-              onChange={(e) => setdiscipleDetails({ ...discipleDetails, discipleType: e.target.value })}
+              onChange={(e) => setdiscipleDetails({ ...discipleDetails, contactType: e.target.value })}
             >
               <option value="LineID">LineID</option>
               <option value="TelegramID">TelegramID</option>
@@ -283,7 +294,7 @@ export default function Viewdisciple() {
             type="text"
             className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600"
             value={discipleDetails.contactInfo}
-            onChange={(e) => setdiscipleDetails({ ...discipleDetails, discipleInfo: e.target.value })}
+            onChange={(e) => setdiscipleDetails({ ...discipleDetails, contactInfo: e.target.value })}
           />
         </div>
 
@@ -293,7 +304,7 @@ export default function Viewdisciple() {
             type="text"
             className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600"
             value={discipleDetails.address}
-            onChange={(e) => setContactDetails({ ...discipleDetails, address: e.target.value })}
+            onChange={(e) => setdiscipleDetails({ ...discipleDetails, address: e.target.value })}
           />
         </div>
 
@@ -368,7 +379,7 @@ export default function Viewdisciple() {
 
             {/* Core Team */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.coreTeam ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, coreTeam: !discipleDetails.coreTeam })}
             >
               <p className="font-bold text-black">Core Team</p>
@@ -379,7 +390,7 @@ export default function Viewdisciple() {
 
             {/* Next Step */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.nextStep ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, nextStep: !discipleDetails.nextStep })}
             >
               <p className="font-bold text-black">Next Step</p>
@@ -390,7 +401,7 @@ export default function Viewdisciple() {
 
             {/* Water Baptism */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.waterBaptism ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, waterBaptism: !discipleDetails.waterBaptism })}
             >
               <p className="font-bold text-black">Water Baptism</p>
@@ -401,7 +412,7 @@ export default function Viewdisciple() {
 
             {/* Encounter */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.encounter ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, encounter: !discipleDetails.encounter })}
             >
               <p className="font-bold text-black">Encounter</p>
@@ -412,7 +423,7 @@ export default function Viewdisciple() {
 
             {/* Holy Spirit Baptism */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.hsBaptism ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, hsBaptism: !discipleDetails.hsBaptism })}
             >
               <p className="font-bold text-black">Holy Spirit Baptism</p>
@@ -423,7 +434,7 @@ export default function Viewdisciple() {
 
              {/* GT1 */}
              <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt1 ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, gt1: !discipleDetails.gt1 })}
             >
               <p className="font-bold text-black">GT1</p>
@@ -434,7 +445,7 @@ export default function Viewdisciple() {
 
              {/* GT2 */}
              <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt2 ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, gt2: !discipleDetails.gt2 })}
             >
               <p className="font-bold text-black">GT2</p>
@@ -445,7 +456,7 @@ export default function Viewdisciple() {
 
              {/* GT3 */}
              <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt3 ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, gt3: !discipleDetails.gt3 })}
             >
               <p className="font-bold text-black">GT3</p>
@@ -456,7 +467,7 @@ export default function Viewdisciple() {
 
              {/* GT4 */}
              <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt4 ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, gt4: !discipleDetails.gt4 })}
             >
               <p className="font-bold text-black">GT4</p>
@@ -467,7 +478,7 @@ export default function Viewdisciple() {
 
             {/* CGLT */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.cglt ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, cglt: !discipleDetails.cglt })}
             >
               <p className="font-bold text-black">CGLT</p>
@@ -492,7 +503,7 @@ export default function Viewdisciple() {
             {/* Edit Progress Button (Sends Data to API) */}
             <button
               className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-blue-700 transition duration-200"
-              onClick={async () => {handleEditProgress}}>
+              onClick={() => handleEditProgress(discipleDetails)}>
               Edit Progress
             </button>
           </div>

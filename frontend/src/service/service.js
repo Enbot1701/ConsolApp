@@ -349,6 +349,7 @@ export const editContactProgress = async (data) => {
 
 export const editDiscipleInfo = async (data) => {
   try {
+    console.log(data);
     const response = await axios.post(API_URL, data, {
       headers: {
         "Content-Type": "text/plain;charset=utf-8",
@@ -369,6 +370,7 @@ export const editDiscipleProgress = async (data) => {
       },
       maxRedirects: 5, // Similar to "redirect: follow" in fetch
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     throw new Error('Error archiving contact: ' + error.message);

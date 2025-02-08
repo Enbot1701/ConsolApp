@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import BottomNavigation from "@/components/BottomNavigation";
 import { getContactById, changeToDisciple, archiveContact, editContactInfo, editContactProgress } from "@/service/service";
 import { FaUserCheck, FaArchive } from "react-icons/fa"; // Importing icons
@@ -15,6 +15,7 @@ export default function ViewContact() {
   const [activeTab, setActiveTab] = useState("info");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
@@ -56,7 +57,6 @@ export default function ViewContact() {
         contactInfo: contactDetails.contactInfo,
         remarks: contactDetails.remarks
       }
-      console.log(data);
       await editContactInfo(data);
     } catch (error) {
       setError("An error occurred while updating info.");
@@ -121,6 +121,7 @@ export default function ViewContact() {
         id: id
       }
       await archiveContact(data);
+      router.push('/people');
     } catch (error) {
       setError("An error occurred while updating progress.");
     } finally {
