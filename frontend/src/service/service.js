@@ -190,13 +190,13 @@ export const getMyCGNames = async (username) => {
   }
 };
 
-export const getCGByName = async (username) => {
+export const getCGByName = async (name) => {
   try {
     const response = await axios.get(API_URL, 
       {
         params: {
-          method: "getMyCGNames",
-          name: username
+          method: "getCGByName",
+          cgName: name
         }
       }
     );
@@ -391,5 +391,87 @@ export const addCG = async (data) => {
   }
 };
 
+export const editCG = async (data) => {
+  try {
+    const response = await axios.post(API_URL, data, {
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      maxRedirects: 5, // Similar to "redirect: follow" in fetch
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error archiving contact: ' + error.message);
+  }
+};
 
-// You can add more methods as needed, following the same structure
+export const editPOC = async (data) => {
+  try {
+    const response = await axios.post(API_URL, data, {
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      maxRedirects: 5, // Similar to "redirect: follow" in fetch
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error archiving contact: ' + error.message);
+  }
+};
+
+export const removeFromCG = async (data) => {
+  try {
+    const response = await axios.post(API_URL, data, {
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      maxRedirects: 5, // Similar to "redirect: follow" in fetch
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error archiving contact: ' + error.message);
+  }
+};
+
+export const editCGInfo = async (data) => {
+  try {
+    const response = await axios.post(API_URL, data, {
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      maxRedirects: 5, // Similar to "redirect: follow" in fetch
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error archiving contact: ' + error.message);
+  }
+};
+
+export const removeFromCGSheet = async (data) => {
+  console.log(data);
+  try {
+    const response = await axios.post(API_URL, data, {
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      maxRedirects: 5, // Similar to "redirect: follow" in fetch
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error archiving contact: ' + error.message);
+  }
+};
+
+export const deleteCG = async (data) => {
+  try {
+    const response = await axios.post(API_URL, data, {
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      maxRedirects: 5, // Similar to "redirect: follow" in fetch
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error deleting CG: ' + error.message);
+  }
+};

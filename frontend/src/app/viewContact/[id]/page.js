@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import BottomNavigation from "@/components/BottomNavigation";
-import { getContactById, changeToDisciple, archiveContact, editContactInfo, editContactProgress } from "@/service/service";
+import { getContactById, changeToDisciple, archiveContact, editContactInfo, editContactProgress, getCGNames, editCG, editPOC, removeFromCG } from "@/service/service";
 import { FaUserCheck, FaArchive } from "react-icons/fa"; // Importing icons
 
 export default function ViewContact() {
@@ -15,6 +15,7 @@ export default function ViewContact() {
   const [activeTab, setActiveTab] = useState("info");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const [cgNames, setCGNames] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,22 +23,25 @@ export default function ViewContact() {
       const username = localStorage.getItem("username");
       setUsername(username);
 
-      const fetchContactDetails = async () => {
+      const fetchData = async () => {
         setLoading(true);
         try {
-          const data = await getContactById(username, id);
-          if (data.message === "Contact not found"){
-            
-          } else {
-            setContactDetails(data);
-          }
+          // Fetch disciple details
+          const contactData = await getContactById(username, id);
+          setContactDetails(contactData);
+          console.log("Contact Data:", contactData);
+  
+          // Fetch CG Names
+          const cgNames = await getCGNames();
+          setCGNames(cgNames);
+          console.log("CG Names:", cgNames);
         } catch (error) {
-          console.error("Error fetching contact details:", error);
+          console.error("Error fetching data:", error);
         } finally {
           setLoading(false);
         }
       };
-      fetchContactDetails();
+      fetchData();
     }
   }, [id]);
 
@@ -129,6 +133,67 @@ export default function ViewContact() {
     }
   }
 
+  const handleEditCG = async() => {
+    setError("");
+    setLoading(true);
+    try {
+      const data = {
+        method: "editCG",
+        sheetName: username,
+        sheetType: "Contacts",
+        id: id,
+        cg:contactDetails.cg
+      }
+      await editCG(data);
+    } catch (error) {
+      setError("An error occurred while editing cg.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleEditPOC = async() => {
+    setError("");
+    setLoading(true);
+    try {
+      const data = {
+        method: "editPOC",
+        sheetName: username,
+        sheetType: "Contacts",
+        id: id,
+        poc:contactDetails.poc
+      }
+      await editPOC(data);
+      router.push(`/people`);
+    } catch (error) {
+      setError("An error occurred while editing poc.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleRemoveFromCG = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const data = {
+        method: "removeFromCG",
+        sheetName: username,
+        sheetType: "Contacts",
+        id: id,
+      };
+      await removeFromCG(data);
+      
+      // Refresh the page after successful removal
+      window.location.reload();
+    } catch (error) {
+      setError("An error occurred while removing entry from CG.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   if (loading)
     return (
       <div className="flex items-center justify-center h-screen bg-white">
@@ -155,9 +220,9 @@ export default function ViewContact() {
           </div>
         </div>
         <p className="text-sm font-bold text-blue-700">Contact</p>
-        <p className="text-sm text-gray-600 mt">
+        <p className="text-sm text-black mt">
           <span className="font-bold text-black">{contactDetails.contactType}: </span>
-          <span className="text-black">{contactDetails.contactInfo}</span>
+          <span className="text-black ">{contactDetails.contactInfo}</span>
         </p>
       </div>
 
@@ -166,19 +231,27 @@ export default function ViewContact() {
         <div className="flex border-b w-full">
           <button
             className={`flex-1 py-2 text-medium font-semibold border-b-4 ${
-              activeTab === "info" ? "border-blue-600 text-blue-600" : "text-gray-500"
+              activeTab === "info" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"
             }`}
             onClick={() => setActiveTab("info")}
           >
             Info
           </button>
           <button
-            className={`flex-1 py-2 text-medium font-semibold ${
-              activeTab === "progress" ? "border-b-4 border-blue-600 text-blue-600" : "text-gray-500"
+            className={`flex-1 py-2 text-medium font-semibold border-b-4 ${
+              activeTab === "progress" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"
             }`}
             onClick={() => setActiveTab("progress")}
           >
             Progress
+          </button>
+          <button
+            className={`flex-1 py-2 text-medium font-semibold border-b-4 ${
+              activeTab === "network" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"
+            }`}
+            onClick={() => setActiveTab("network")}
+          >
+            Network
           </button>
         </div>
       </div>
@@ -214,7 +287,7 @@ export default function ViewContact() {
           <select
             className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none"
             value={contactDetails.poc || "Street Evangelism"}
-            onChange={(e) => setContactDetails({ ...contactDetails, source: e.target.value })}
+            onChange={(e) => setContactDetails({ ...contactDetails, poc: e.target.value })}
           >
             <option value="Jon">Jon</option>
             <option value="Coral">Coral</option>
@@ -372,6 +445,69 @@ export default function ViewContact() {
               Edit Progress
             </button>
           </div>
+        )}
+
+        {/* Network Tab */}
+        {activeTab === "network" && (
+        <div className="mt-4 space-y-3">
+          <div className="relative">
+            <label className="text-m font-semibold text-black">CG</label>
+            <select
+              className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none"
+              value={contactDetails.cg}
+              onChange={(e) =>
+                setContactDetails({ ...contactDetails, cg: e.target.value })
+              }
+            >
+              <option value="" disabled>Select a CG</option>
+              {cgNames.map((cg, index) => (
+                <option key={index} value={cg}>
+                  {cg}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>
+          </div>
+
+          <button
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-blue-700 transition duration-200"
+            onClick={() => handleEditCG(contactDetails)}
+          >
+            Edit CG
+          </button>
+          <button
+            className="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-red-700 transition duration-200"
+            onClick={() => handleRemoveFromCG(contactDetails)}
+          >
+            Remove from CG
+          </button>
+
+          {/* POC Dropdown */}
+          <div className="relative">
+            <label className="text-sm font-semibold text-black">POC</label>
+            <select
+              className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none"
+              value={contactDetails.poc || "No POC"}
+              onChange={(e) => setContactDetails({ ...contactDetails, poc: e.target.value })}
+            >
+              <option value="Jon">Jon</option>
+              <option value="Coral">Coral</option>
+              <option value="Jessica">Jessica</option>
+              <option value="Nicolle">Nicolle</option>
+              <option value="Hua-En">Hua-En</option>
+            </select>
+            <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>
+          </div>
+
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
+          <button
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-blue-700 transition duration-200"
+            onClick={() => handleEditPOC(contactDetails)}
+          >
+            Edit POC
+          </button>
+        </div>
         )}
        </div>
       </div>

@@ -75,7 +75,7 @@ export default function People() {
               <div
                 key={contact.id}
                 onClick={() => handleViewContact(contact)}
-                className="bg-white shadow-inner rounded-lg p-4 flex justify-between items-center cursor-pointer hover:bg-blue-100 border-2 border-blue-600"
+                className="bg-white shadow-inner rounded-lg p-3 flex justify-between items-center cursor-pointer hover:bg-blue-100 border-2 border-blue-600"
               >
                 <div className="flex-grow">
                   <p className="font-bold text-black">{contact.fullName}</p>
@@ -86,7 +86,7 @@ export default function People() {
                 </div>
 
                 {/* Right arrow */}
-                <div className="ml-2 text-black">➔</div>
+                <div className="ml-2 text-black mr-2">➔</div>
               </div>
             ))
           ) : (

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import BottomNavigation from "@/components/BottomNavigation";
-import { changeToContact, getDiscipleById, editDiscipleInfo, editDiscipleProgress, getCGNames, archiveContact } from "@/service/service";
+import { changeToContact, getDiscipleById, editDiscipleInfo, editDiscipleProgress, getCGNames, archiveContact, editCG, editPOC } from "@/service/service";
 import { FaUser, FaArchive } from "react-icons/fa"; // Importing icons
 
 export default function Viewdisciple() {
@@ -41,7 +41,6 @@ export default function Viewdisciple() {
           setLoading(false);
         }
       };
-  
       fetchData();
     }
   }, [id]);
@@ -56,12 +55,10 @@ export default function Viewdisciple() {
         sheetType: "Disciples",
         id: discipleDetails.id,
         fullName: discipleDetails.fullName,
-        poc: discipleDetails.poc,
         source: discipleDetails.source,
         contactType: discipleDetails.contactType,
         contactInfo: discipleDetails.contactInfo,
         remarks: discipleDetails.remarks,
-        cg: discipleDetails.cg
       }
       console.log(data);
       await editDiscipleInfo(data);
@@ -96,7 +93,6 @@ export default function Viewdisciple() {
         gt4: discipleDetails.gt4,
         cglt: discipleDetails.cglt
       }
-      console.log("Updating Editing Profile")
       await editDiscipleProgress(data);
     } catch (error) {
       setError("An error occurred while updating progress.");
@@ -145,6 +141,65 @@ export default function Viewdisciple() {
     }
   }
 
+  const handleEditCG = async() => {
+    setError("");
+    setLoading(true);
+    try {
+      const data = {
+        method: "editCG",
+        sheetName: username,
+        sheetType: "Disciples",
+        id: id,
+        cg:discipleDetails.cg
+      }
+      await editCG(data);
+    } catch (error) {
+      setError("An error occurred while editing cg.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleEditPOC = async() => {
+    setError("");
+    setLoading(true);
+    try {
+      const data = {
+        method: "editPOC",
+        sheetName: username,
+        sheetType: "Disciples",
+        id: id,
+        poc:discipleDetails.poc
+      }
+      await editPOC(data);
+    } catch (error) {
+      setError("An error occurred while editing poc.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+    const handleRemoveFromCG = async () => {
+      setError("");
+      setLoading(true);
+      try {
+        const data = {
+          method: "removeFromCG",
+          sheetName: username,
+          sheetType: "Disciples",
+          id: id,
+        };
+        await removeFromCG(data);
+        
+        // Refresh the page after successful removal
+        window.location.reload();
+      } catch (error) {
+        setError("An error occurred while removing entry from CG.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
 
   if (loading)
     return (
@@ -176,30 +231,38 @@ export default function Viewdisciple() {
           </div>
         </div>
         <p className="text-sm font-bold text-green-700">Disciple</p>
-        <p className="text-sm text-gray-600 mt">
+        <p className="text-sm text-black mt">
           <span className="font-bold text-black">{discipleDetails.contactType}: </span>
           <span className="text-black">{discipleDetails.contactInfo}</span>
         </p>
       </div>
 
-      {/* Fixed Tab Bar */}
-      <div className="fixed top-28 left-0 right-0 bg-white z-10 shadow-md">
+            {/* Fixed Tab Bar */}
+            <div className="fixed top-28 left-0 right-0 bg-white z-10 shadow-md">
         <div className="flex border-b w-full">
           <button
             className={`flex-1 py-2 text-medium font-semibold border-b-4 ${
-              activeTab === "info" ? "border-blue-600 text-blue-600" : "text-gray-500"
+              activeTab === "info" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"
             }`}
             onClick={() => setActiveTab("info")}
           >
             Info
           </button>
           <button
-            className={`flex-1 py-2 text-medium font-semibold ${
-              activeTab === "progress" ? "border-b-4 border-blue-600 text-blue-600" : "text-gray-500"
+            className={`flex-1 py-2 text-medium font-semibold border-b-4 ${
+              activeTab === "progress" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"
             }`}
             onClick={() => setActiveTab("progress")}
           >
             Progress
+          </button>
+          <button
+            className={`flex-1 py-2 text-medium font-semibold border-b-4 ${
+              activeTab === "network" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"
+            }`}
+            onClick={() => setActiveTab("network")}
+          >
+            Network
           </button>
         </div>
       </div>
@@ -221,17 +284,6 @@ export default function Viewdisciple() {
         </div>
 
         <div>
-          <label className="text-m font-semibold text-black">CG</label>
-          <input
-            type="text"
-            className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600"
-            value={discipleDetails.cg}
-            onChange={(e) => setdiscipleDetails({ ...discipleDetails, cg: e.target.value })}
-            readOnly
-          />
-        </div>
-
-        <div>
           <label className="text-sm font-semibold text-black">Date Added</label>
           <input
             type="text"
@@ -239,23 +291,6 @@ export default function Viewdisciple() {
             value={discipleDetails.date || "N/A"}
             readOnly
           />
-        </div>
-
-         {/* POC Dropdown */}
-         <div className="relative">
-          <label className="text-sm font-semibold text-black">POC</label>
-          <select
-            className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none"
-            value={discipleDetails.poc || "Street Evangelism"}
-            onChange={(e) => setdiscipleDetails({ ...discipleDetails, source: e.target.value })}
-          >
-            <option value="Jon">Jon</option>
-            <option value="Coral">Coral</option>
-            <option value="Jessica">Jessica</option>
-            <option value="Nicolle">Nicolle</option>
-            <option value="Hua-En">Hua-En</option>
-          </select>
-          <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>
         </div>
 
         {/* Source Dropdown */}
@@ -514,6 +549,69 @@ export default function Viewdisciple() {
               Edit Progress
             </button>
           </div>
+        )}
+
+        {/* Network Tab */}
+        {activeTab === "network" && (
+        <div className="mt-4 space-y-3">
+          <div className="relative">
+            <label className="text-m font-semibold text-black">CG</label>
+            <select
+              className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none"
+              value={discipleDetails.cg}
+              onChange={(e) =>
+                setdiscipleDetails({ ...discipleDetails, cg: e.target.value })
+              }
+            >
+              <option value="" disabled>Select a CG</option>
+              {cgNames.map((cg, index) => (
+                <option key={index} value={cg}>
+                  {cg}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>
+          </div>
+
+          <button
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-blue-700 transition duration-200"
+            onClick={() => handleEditCG(discipleDetails)}
+          >
+            Edit CG
+          </button>
+          <button
+            className="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-red-700 transition duration-200"
+            onClick={() => handleRemoveFromCG(discipleDetails)}
+          >
+            Remove from CG
+          </button>
+
+          {/* POC Dropdown */}
+          <div className="relative">
+            <label className="text-sm font-semibold text-black">POC</label>
+            <select
+              className="w-full p-2 bg-white rounded-lg text-black border-2 border-blue-600 appearance-none"
+              value={discipleDetails.poc || ""}
+              onChange={(e) => setdiscipleDetails({ ...discipleDetails, poc: e.target.value })}
+            >
+              <option value="Jon">Jon</option>
+              <option value="Coral">Coral</option>
+              <option value="Jessica">Jessica</option>
+              <option value="Nicolle">Nicolle</option>
+              <option value="Hua-En">Hua-En</option>
+            </select>
+            <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>
+          </div>
+
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
+          <button
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-2 hover:bg-blue-700 transition duration-200"
+            onClick={() => handleEditPOC(discipleDetails)}
+          >
+            Edit POC
+          </button>
+        </div>
         )}
        </div>
       </div>
