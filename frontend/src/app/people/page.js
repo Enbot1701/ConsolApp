@@ -72,14 +72,18 @@ export default function People() {
       </div>
 
       {/* Search Bar */}
-      <div className="mt-40 px-6">
-        <input
-          type="text"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={handleSearch}
-          className="w-full p-3 border-2 border-gray-400 rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-        />
+      <div className="flex justify-center items-center mt-40 px-6">
+        <div className="w-full max-w-lg">
+          <div className="bg-white shadow-inner rounded-lg p-3 flex items-center border-2 border-gray-400">
+            <input
+              type="text"
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={handleSearch}
+              className="w-full bg-transparent outline-none text-black"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Scrollable Content */}
