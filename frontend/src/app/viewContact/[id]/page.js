@@ -33,7 +33,7 @@ export default function ViewContact() {
   
           // Fetch CG Names
           const cgNames = await getCGNames();
-          setCGNames(cgNames);
+          setCGNames(Array.isArray(response) ? response : []); // Ensure it's an array
           console.log("CG Names:", cgNames);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -460,7 +460,7 @@ export default function ViewContact() {
               }
             >
               <option value="" disabled>Select a CG</option>
-              {cgNames.map((cg, index) => (
+              {(cgNames ?? []).map((cg, index) => (
                 <option key={index} value={cg}>
                   {cg}
                 </option>
