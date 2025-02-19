@@ -99,6 +99,7 @@ export default function AddContact() {
               <option value="TelegramID">TelegramID</option>
               <option value="Whatsapp">Whatsapp</option>
               <option value="InstagramID">InstagramID</option>
+              <option value="HellotalkID">HellotalkID</option>
               <option value="Others">Others</option>
             </select>
             <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>
@@ -135,7 +136,7 @@ export default function AddContact() {
               <option value="" disabled hidden>Select Source</option>
               <option value="Street Evangelism">Street Evangelism</option>
               <option value="English Exchange">English Exchange</option>
-              <option value="Online Platforms">Online Platforms (e.g., HelloTalk)</option>
+              <option value="Online Platforms">Online Platforms (e.g. HelloTalk)</option>
               <option value="Others">Others</option>
             </select>
             <div className="absolute right-3 top-9 pointer-events-none text-black">▼</div>

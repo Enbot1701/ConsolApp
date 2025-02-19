@@ -7,8 +7,10 @@ import { getAllContacts, getAllDisciples } from "@/service/service";
 
 export default function People() {
   const [contacts, setContacts] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
   const [activeTab, setActiveTab] = useState("contacts");
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -22,33 +24,37 @@ export default function People() {
   }, [activeTab, router]);
 
   const fetchData = async (username) => {
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       let data = activeTab === "contacts" ? await getAllContacts(username) : await getAllDisciples(username);
       setContacts(Array.isArray(data) ? data : []);
+      setFilteredContacts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching data:", error);
       setContacts([]);
+      setFilteredContacts([]);
     }
-    setLoading(false); // Stop loading
+    setLoading(false);
+  };
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    setFilteredContacts(
+      contacts.filter(contact => contact.fullName.toLowerCase().includes(query))
+    );
   };
 
   const handleViewContact = (contact) => {
-    const {id } = contact;
-    if (activeTab === "contacts"){
-      router.push(`/viewContact/${id}`);
-    } else {
-      router.push(`/viewDisciple/${id}`);
-    }
-  }
-   
+    const { id } = contact;
+    router.push(activeTab === "contacts" ? `/viewContact/${id}` : `/viewDisciple/${id}`);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col bg-white">
       {/* Fixed Title & Tabs */}
       <div className="fixed top-0 left-0 right-0 bg-white z-10 p-8">
-      <h1 className="text-2xl font-bold text-left text-black">My People</h1>
-        
-        {/* Tabs */}
+        <h1 className="text-2xl font-bold text-left text-black">My People</h1>
         <div className="flex border-b mt-4">
           <button
             className={`flex-1 py-2 text-medium font-semibold ${activeTab === "contacts" ? "border-b-4 border-blue-600 text-blue-600" : "text-gray-500"}`}
@@ -65,13 +71,24 @@ export default function People() {
         </div>
       </div>
 
-      {/* Page Content */}
-      <div className="flex-grow mt-36 p-6 flex flex-col items-center">
+      {/* Search Bar */}
+      <div className="mt-40 px-6">
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="w-full p-3 border-2 border-gray-400 rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
+        />
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-grow overflow-auto mt-4 px-6 pb-20 flex flex-col items-center">
         <div className="space-y-4 max-w-lg w-full">
           {loading ? (
-            <p className="text-center text-blue-600">Loading...</p> // Show loading indicator
-          ) : contacts.length > 0 ? (
-            contacts.map((contact) => (
+            <p className="text-center text-blue-600">Loading...</p>
+          ) : filteredContacts.length > 0 ? (
+            filteredContacts.map((contact) => (
               <div
                 key={contact.id}
                 onClick={() => handleViewContact(contact)}
@@ -84,8 +101,6 @@ export default function People() {
                     <span className="text-gray-800">{contact.contactInfo}</span>
                   </p>
                 </div>
-
-                {/* Right arrow */}
                 <div className="ml-2 text-black mr-2">➔</div>
               </div>
             ))
