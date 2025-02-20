@@ -32,9 +32,9 @@ export default function Viewdisciple() {
           console.log("Disciple Data:", discipleData);
   
           // Fetch CG Names
-          const cgNames = await getCGNames();
-          setCGNames(Array.isArray(response) ? response : []); // Ensure it's an array
-          console.log("CG Names:", cgNames);
+          const cgNamesResponse = await getCGNames();
+          setCGNames(Array.isArray(cgNamesResponse) ? cgNamesResponse : []); // Ensure it's an array
+          console.log("CG Names:", cgNamesResponse);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {

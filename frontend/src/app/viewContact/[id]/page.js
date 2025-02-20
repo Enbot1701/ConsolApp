@@ -32,9 +32,9 @@ export default function ViewContact() {
           console.log("Contact Data:", contactData);
   
           // Fetch CG Names
-          const cgNames = await getCGNames();
-          setCGNames(Array.isArray(response) ? response : []); // Ensure it's an array
-          console.log("CG Names:", cgNames);
+          const cgNamesResponse = await getCGNames();
+          setCGNames(Array.isArray(cgNamesResponse) ? cgNamesResponse : []); // Ensure it's an array
+          console.log("CG Names:", cgNamesResponse);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
