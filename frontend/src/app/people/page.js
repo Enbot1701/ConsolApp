@@ -87,7 +87,7 @@ export default function People() {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-grow overflow-auto mt-4 px-6 pb-20 flex flex-col items-center">
+      <div className="flex-grow overflow-auto mt-4 px-6 pb-24 flex flex-col items-center">
         <div className="space-y-4 max-w-lg w-full">
           {loading ? (
             <p className="text-center text-blue-600">Loading...</p>

@@ -82,6 +82,7 @@ export default function ViewContact() {
         saved: contactDetails.saved,
         called: contactDetails.called,
         meetUp: contactDetails.meetUp,
+        coreTeam: contactDetails.coreTeam,
         progressRemarks: contactDetails.progressRemarks
       }
       console.log(data);
@@ -383,45 +384,56 @@ export default function ViewContact() {
           <div className="mt-4 space-y-4 max-w-lg w-full">
             {/* Gospel Shared */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${contactDetails.gospelShared ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-3 border-2 cursor-pointer ${contactDetails.gospelShared ? "border-green-600" : "border-red-600"}`}
               onClick={() => setContactDetails({ ...contactDetails, gospelShared: !contactDetails.gospelShared })}
             >
               <p className="font-bold text-black">Gospel Shared</p>
-              <span className={`text-2xl ${contactDetails.gospelShared ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${contactDetails.gospelShared ? "text-green-600" : "text-red-600"}`}>
                 {contactDetails.gospelShared ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Saved */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${contactDetails.saved ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-3 border-2 cursor-pointer ${contactDetails.saved ? "border-green-600" : "border-red-600"}`}
               onClick={() => setContactDetails({ ...contactDetails, saved: !contactDetails.saved })}
             >
               <p className="font-bold text-black">Saved</p>
-              <span className={`text-2xl ${contactDetails.saved ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${contactDetails.saved ? "text-green-600" : "text-red-600"}`}>
                 {contactDetails.saved ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Called */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${contactDetails.called ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-3 border-2 cursor-pointer ${contactDetails.called ? "border-green-600" : "border-red-600"}`}
               onClick={() => setContactDetails({ ...contactDetails, called: !contactDetails.called })}
             >
               <p className="font-bold text-black">Called</p>
-              <span className={`text-2xl ${contactDetails.called ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${contactDetails.called ? "text-green-600" : "text-red-600"}`}>
                 {contactDetails.called ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Meet Up */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${contactDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-3 border-2 cursor-pointer ${contactDetails.meetUp ? "border-green-600" : "border-red-600"}`}
               onClick={() => setContactDetails({ ...contactDetails, meetUp: !contactDetails.meetUp })}
             >
               <p className="font-bold text-black">Meet Up</p>
-              <span className={`text-2xl ${contactDetails.meetUp ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${contactDetails.meetUp ? "text-green-600" : "text-red-600"}`}>
                 {contactDetails.meetUp ? "✔" : "✖"}
+              </span>
+            </div>
+
+            {/* Core Team */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-3 border-2 cursor-pointer ${contactDetails.coreTeam ? "border-green-600" : "border-red-600"}`}
+              onClick={() => setContactDetails({ ...contactDetails, coreTeam: !contactDetails.coreTeam })}
+            >
+              <p className="font-bold text-black">Core Team</p>
+              <span className={`${contactDetails.coreTeam ? "text-green-600" : "text-red-600"}`}>
+                {contactDetails.coreTeam ? "✔" : "✖"}
               </span>
             </div>
 

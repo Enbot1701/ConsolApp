@@ -93,6 +93,7 @@ export default function Viewdisciple() {
         gt4: discipleDetails.gt4,
         cglt: discipleDetails.cglt
       }
+      console.log(data)
       await editDiscipleProgress(data);
     } catch (error) {
       setError("An error occurred while updating progress.");
@@ -377,155 +378,255 @@ export default function Viewdisciple() {
           <div className="mt-4 space-y-4 max-w-lg w-full">
             {/* Gospel Shared */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gospelShared ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.gospelShared ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, gospelShared: !discipleDetails.gospelShared })}
             >
               <p className="font-bold text-black">Gospel Shared</p>
-              <span className={`text-2xl ${discipleDetails.gospelShared ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.gospelShared ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.gospelShared ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Saved */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.saved ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.saved ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, saved: !discipleDetails.saved })}
             >
               <p className="font-bold text-black">Saved</p>
-              <span className={`text-2xl ${discipleDetails.saved ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.saved ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.saved ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Called */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.called ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.called ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, called: !discipleDetails.called })}
             >
               <p className="font-bold text-black">Called</p>
-              <span className={`text-2xl ${discipleDetails.called ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.called ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.called ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Meet Up */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.meetUp ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, meetUp: !discipleDetails.meetUp })}
             >
               <p className="font-bold text-black">Meet Up</p>
-              <span className={`text-2xl ${discipleDetails.meetUp ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.meetUp ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.meetUp ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Core Team */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.coreTeam ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.coreTeam ? "border-green-600" : "border-red-600"
+              }`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, coreTeam: !discipleDetails.coreTeam })}
             >
               <p className="font-bold text-black">Core Team</p>
-              <span className={`text-2xl ${discipleDetails.coreTeam ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.coreTeam ? "✔" : "✖"}
+              <span className={`font-bold flex items-center ${
+                discipleDetails.coreTeam ? "text-green-600" : "text-red-600"
+              }`}>
+                <span className="text-base">{discipleDetails.coreTeam ? "✔" : "✖"}</span>
               </span>
             </div>
 
             {/* Next Step */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.nextStep ? "border-green-600" : "border-red-600"}`}
-              onClick={() => setdiscipleDetails({ ...discipleDetails, nextStep: !discipleDetails.nextStep })}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.nextStep === "Finished" ? "border-green-600" :
+                discipleDetails.nextStep === "Started" ? "border-blue-600" :
+                "border-red-600"
+              }`}
+              onClick={() => {
+                const nextStatus = discipleDetails.nextStep === "No" ? "Started" :
+                                  discipleDetails.nextStep === "Started" ? "Finished" : 
+                                  "No"; 
+                setdiscipleDetails({ ...discipleDetails, nextStep: nextStatus });
+              }}
             >
-              <p className="font-bold text-black">Next Step</p>
-              <span className={`text-2xl ${discipleDetails.nextStep ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.nextStep ? "✔" : "✖"}
+              <p className="font-bold text-black">Next Step</p> 
+              <span className={`font-bold flex items-center ${
+                discipleDetails.nextStep === "Finished" ? "text-green-600" :
+                discipleDetails.nextStep === "Started" ? "text-blue-600" :
+                "text-red-600"
+              }`}>
+                <span className="text-base"> 
+                  {discipleDetails.nextStep === "Finished" ? "Finished" :
+                  discipleDetails.nextStep === "Started" ? "Started" : "✖"}
+                </span>
               </span>
             </div>
 
             {/* Water Baptism */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.waterBaptism ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.waterBaptism ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, waterBaptism: !discipleDetails.waterBaptism })}
             >
               <p className="font-bold text-black">Water Baptism</p>
-              <span className={`text-2xl ${discipleDetails.waterBaptism ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.waterBaptism ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.waterBaptism ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Encounter */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.encounter ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.encounter ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, encounter: !discipleDetails.encounter })}
             >
               <p className="font-bold text-black">Encounter</p>
-              <span className={`text-2xl ${discipleDetails.encounter ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.encounter ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.encounter ? "✔" : "✖"}
               </span>
             </div>
 
             {/* Holy Spirit Baptism */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.hsBaptism ? "border-green-600" : "border-red-600"}`}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${discipleDetails.hsBaptism ? "border-green-600" : "border-red-600"}`}
               onClick={() => setdiscipleDetails({ ...discipleDetails, hsBaptism: !discipleDetails.hsBaptism })}
             >
               <p className="font-bold text-black">Holy Spirit Baptism</p>
-              <span className={`text-2xl ${discipleDetails.hsBaptism ? "text-green-600" : "text-red-600"}`}>
+              <span className={`${discipleDetails.hsBaptism ? "text-green-600" : "text-red-600"}`}>
                 {discipleDetails.hsBaptism ? "✔" : "✖"}
               </span>
             </div>
 
              {/* GT1 */}
-             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt1 ? "border-green-600" : "border-red-600"}`}
-              onClick={() => setdiscipleDetails({ ...discipleDetails, gt1: !discipleDetails.gt1 })}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.gt1 === "Finished" ? "border-green-600" :
+                discipleDetails.gt1 === "Started" ? "border-blue-600" :
+                "border-red-600"
+              }`}
+              onClick={() => {
+                const nextStatus = discipleDetails.gt1 === "No" ? "Started" :
+                                  discipleDetails.gt1 === "Started" ? "Finished" : 
+                                  "No"; 
+                setdiscipleDetails({ ...discipleDetails, gt1: nextStatus });
+              }}
             >
-              <p className="font-bold text-black">GT1</p>
-              <span className={`text-2xl ${discipleDetails.gt1 ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.gt1 ? "✔" : "✖"}
+              <p className="font-bold text-black">GT1</p> 
+              <span className={`font-bold flex items-center ${
+                discipleDetails.gt1 === "Finished" ? "text-green-600" :
+                discipleDetails.gt1 === "Started" ? "text-blue-600" :
+                "text-red-600"
+              }`}>
+                <span className="text-base">
+                  {discipleDetails.gt1 === "Finished" ? "Finished" :
+                  discipleDetails.gt1 === "Started" ? "Started" : "✖"}
+                </span>
               </span>
             </div>
 
-             {/* GT2 */}
-             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt2 ? "border-green-600" : "border-red-600"}`}
-              onClick={() => setdiscipleDetails({ ...discipleDetails, gt2: !discipleDetails.gt2 })}
+            {/* GT2 */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.gt2 === "Finished" ? "border-green-600" :
+                discipleDetails.gt2 === "Started" ? "border-blue-600" :
+                "border-red-600"
+              }`}
+              onClick={() => {
+                const nextStatus = discipleDetails.gt2 === "No" ? "Started" :
+                                  discipleDetails.gt2 === "Started" ? "Finished" : 
+                                  "No"; 
+                setdiscipleDetails({ ...discipleDetails, gt2: nextStatus });
+              }}
             >
-              <p className="font-bold text-black">GT2</p>
-              <span className={`text-2xl ${discipleDetails.gt2 ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.gt2 ? "✔" : "✖"}
+              <p className="font-bold text-black ">GT2</p> 
+              <span className={`font-bold flex items-center ${
+                discipleDetails.gt2 === "Finished" ? "text-green-600" :
+                discipleDetails.gt2 === "Started" ? "text-blue-600" :
+                "text-red-600"
+              }`}>
+                <span className="text-base">
+                  {discipleDetails.gt2 === "Finished" ? "Finished" :
+                  discipleDetails.gt2 === "Started" ? "Started" : "✖"}
+                </span>
               </span>
             </div>
 
-             {/* GT3 */}
-             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt3 ? "border-green-600" : "border-red-600"}`}
-              onClick={() => setdiscipleDetails({ ...discipleDetails, gt3: !discipleDetails.gt3 })}
+            {/* GT3 */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.gt3 === "Finished" ? "border-green-600" :
+                discipleDetails.gt3 === "Started" ? "border-blue-600" :
+                "border-red-600"
+              }`}
+              onClick={() => {
+                const nextStatus = discipleDetails.gt3 === "No" ? "Started" :
+                                  discipleDetails.gt3 === "Started" ? "Finished" : 
+                                  "No"; 
+                setdiscipleDetails({ ...discipleDetails, gt3: nextStatus });
+              }}
             >
-              <p className="font-bold text-black">GT3</p>
-              <span className={`text-2xl ${discipleDetails.gt3 ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.gt3 ? "✔" : "✖"}
+              <p className="font-bold text-black ">GT3</p> 
+              <span className={`font-bold flex items-center ${
+                discipleDetails.gt3 === "Finished" ? "text-green-600" :
+                discipleDetails.gt3 === "Started" ? "text-blue-600" :
+                "text-red-600"
+              }`}>
+                <span className="text-base">
+                  {discipleDetails.gt3 === "Finished" ? "Finished" :
+                  discipleDetails.gt3 === "Started" ? "Started" : "✖"}
+                </span>
               </span>
             </div>
 
-             {/* GT4 */}
-             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.gt4 ? "border-green-600" : "border-red-600"}`}
-              onClick={() => setdiscipleDetails({ ...discipleDetails, gt4: !discipleDetails.gt4 })}
+            {/* GT4 */}
+            <div 
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.gt4 === "Finished" ? "border-green-600" :
+                discipleDetails.gt4 === "Started" ? "border-blue-600" :
+                "border-red-600"
+              }`}
+              onClick={() => {
+                const nextStatus = discipleDetails.gt4 === "No" ? "Started" :
+                                  discipleDetails.gt4 === "Started" ? "Finished" : 
+                                  "No"; 
+                setdiscipleDetails({ ...discipleDetails, gt4: nextStatus });
+              }}
             >
-              <p className="font-bold text-black">GT4</p>
-              <span className={`text-2xl ${discipleDetails.gt4 ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.gt4 ? "✔" : "✖"}
+              <p className="font-bold text-black ">GT4</p> 
+              <span className={`font-bold flex items-center ${
+                discipleDetails.gt4 === "Finished" ? "text-green-600" :
+                discipleDetails.gt4 === "Started" ? "text-blue-600" :
+                "text-red-600"
+              }`}>
+                <span className="text-base">
+                  {discipleDetails.gt4 === "Finished" ? "Finished" :
+                  discipleDetails.gt4 === "Started" ? "Started" : "✖"}
+                </span>
               </span>
             </div>
 
             {/* CGLT */}
             <div 
-              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer ${discipleDetails.cglt ? "border-green-600" : "border-red-600"}`}
-              onClick={() => setdiscipleDetails({ ...discipleDetails, cglt: !discipleDetails.cglt })}
+              className={`flex justify-between items-center bg-white shadow-inner rounded-lg p-2 border-2 cursor-pointer h-14 ${
+                discipleDetails.cglt === "Finished" ? "border-green-600" :
+                discipleDetails.cglt === "Started" ? "border-blue-600" :
+                "border-red-600"
+              }`}
+              onClick={() => {
+                const nextStatus = discipleDetails.cglt === "No" ? "Started" :
+                                  discipleDetails.cglt === "Started" ? "Finished" : 
+                                  "No"; 
+                setdiscipleDetails({ ...discipleDetails, cglt: nextStatus });
+              }}
             >
-              <p className="font-bold text-black">CGLT</p>
-              <span className={`text-2xl ${discipleDetails.cglt ? "text-green-600" : "text-red-600"}`}>
-                {discipleDetails.cglt ? "✔" : "✖"}
+              <p className="font-bold text-black ">CGLT</p> 
+              <span className={`font-bold flex items-center ${
+                discipleDetails.cglt === "Finished" ? "text-green-600" :
+                discipleDetails.cglt === "Started" ? "text-blue-600" :
+                "text-red-600"
+              }`}>
+                <span className="text-base">
+                  {discipleDetails.cglt === "Finished" ? "Finished" :
+                  discipleDetails.cglt === "Started" ? "Started" : "✖"}
+                </span>
               </span>
             </div>
 

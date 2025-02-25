@@ -68,13 +68,13 @@ export default function AddContact() {
   };  
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
+    <div className="flex flex-col items-center justify-center h-screen p-4 bg-white">
       <div className="fixed top-0 left-0 right-0 bg-white z-10 p-8">
         <h1 className="text-2xl font-bold text-left text-black ml-[-px]">Add Contact</h1>
       </div>
 
-      <div className="flex-grow mt-16 px-2 py-4 flex flex-col items-center max-w-2xl w-full">
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
+      <div className="flex-grow mt-16 px-2 py-4 flex flex-col items-center max-w-2xl w-full overflow-y-auto">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3 pb-24">
           <label className="text-sm font-semibold text-black">Full Name</label>
           <input
             type="text"
